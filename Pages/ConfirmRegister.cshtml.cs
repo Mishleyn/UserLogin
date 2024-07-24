@@ -8,7 +8,7 @@ namespace UserLogin.Pages
     {
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public string Name { get; set; } = "";
+        public string Email { get; set; } = "";
 
         [BindProperty]
         public long ConfirmationCode { get; set; }
@@ -18,15 +18,15 @@ namespace UserLogin.Pages
             _contextAccessor = contextAccessor;
         }
 
-        public void OnGet(string name, long confirmationCode)
+        public void OnGet(string email)
         {
-            Name = $"Name: {name}";
-            _contextAccessor.HttpContext.Session.SetString("ConfirmationCode", confirmationCode.ToString());
+            Email = $"Email: {email}";            
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            long validConfirmationCode = long.Parse(_contextAccessor.HttpContext.Session.GetString("ConfirmationCode"));
+            long validConfirmationCode = long.Parse(_contextAccessor.HttpContext
+                .Session.GetString("ConfirmationCode"));
 
             if(ConfirmationCode == validConfirmationCode)
             {

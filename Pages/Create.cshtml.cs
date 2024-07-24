@@ -7,24 +7,32 @@ namespace UserLogin.Pages
     [IgnoreAntiforgeryToken]
     public class CreateModel : PageModel
     {
-        ApplicationContext context;
+        private readonly IHttpContextAccessor _contextAccessor;
+
+        private ApplicationContext _context;
 
         [BindProperty]
         public User Person { get; set; } = new();
 
         Random random = new Random();
 
-        public CreateModel(ApplicationContext db)
+        public CreateModel(IHttpContextAccessor contextAccessor, ApplicationContext db)
         {
-            context = db;
+            _contextAccessor = contextAccessor;
+            _context = db;
         }
 
         public async Task<IActionResult> OnPostAsync()
-        {
-            Person.ConfirmationCode = random.Next(1000, 10000);    
-            context.Users.Add(Person);
-            await context.SaveChangesAsync();
-            return RedirectToPage("ConfirmRegister", new {name = Person.Name, confirmationCode = Person.ConfirmationCode});
+        {            
+            Person.ConfirmationCode = random.Next(1000, 10000);
+
+            _contextAccessor.HttpContext
+                .Session.SetString("ConfirmationCode", Person.ConfirmationCode.ToString());
+
+            _context.Users.Add(Person);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("ConfirmRegister", new {email = Person.Email});
         }
     }
 }

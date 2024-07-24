@@ -30,4 +30,6 @@ app.MapRazorPages();
 
 app.UseSession();
 
+app.MapFallbackToPage("/Create");
+
 app.Run();

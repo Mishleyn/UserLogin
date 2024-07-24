@@ -7,18 +7,9 @@ namespace UserLogin.Pages
 {
     public class IndexModel : PageModel
     {
-        ApplicationContext context;
-
-        public List<User> Users { get; private set; } = new();
-
-        public IndexModel(ApplicationContext db)
+        public async Task<IActionResult> OnGet()
         {
-            context = db;
-        }
-
-        public void OnGet()
-        {
-            Users = context.Users.AsNoTracking().ToList();
+            return RedirectToPage("Create");
         }
     }
 }
